@@ -35,25 +35,27 @@ for b in branchfiles:
         pattern_member = r'\d+'
         block_members = block_members | set(re.findall(pattern_member, setmatch[0]))
 
+    invoked = len(block_total)
+    block_total = 0 if not block_total else block_total[0]
     branchdata[b] = {
-        'total': block_total[0],
+        'total': block_total,
         'activations': len(block_members),
-        'coverage': float(len(block_members)) / max(1, float(int(block_total[0]))),
-        'times_invoked': len(block_total),
+        'coverage': float(len(block_members)) / max(1, float(int(block_total))),
+        'times_invoked': invoked,
         'activated_lines': block_members,
     }
 
-print '%-20s %-15s %-15s %-15s %-s' % (
+print '%-40s %-15s %-15s %-15s %-s' % (
     'Function',
     'Times invoked',
     'Branches',
     'Activations',
     'Coverage'
 )
-print '-'*77
+print '-'*97
 for key in branchdata:
     branch = branchdata[key]
-    print '%-20s %-15s %-15s %-15s %-s%%' % (
+    print '%-40s %-15s %-15s %-15s %-s%%' % (
         key[:-7],
         0 if key not in branchdata else branchdata[key]['times_invoked'],
         0 if key not in branchdata else branchdata[key]['total'],

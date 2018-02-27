@@ -6,6 +6,7 @@ flake8 --select E,W --max-line-length=140 --ignore E722 jarviscli/
 echo "lint errors checked"
 echo ""
 cd jarviscli/
+rm *.branch
 echo "" > parse_date@textParser.py.branch
 echo "" > main@weather_pinpoint.py.branch
 echo "" > score@cricket.py.branch
