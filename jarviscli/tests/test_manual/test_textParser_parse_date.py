@@ -30,6 +30,27 @@ class ParseDateTest(unittest.TestCase):
         self.assertEqual(current_month, res[1].month)
         self.assertEqual(current_day, res[1].day)
 
+    def test_parse_date_3(self):
+        #contract: verifies that a another format of date can be parsed and that
+        #the dateobject returned is 2 years 1 month and 2 days after 01.03.2018
+        input_string = "01.03.2018 and two year and one month and two day and zero minute and zero second"
+        res = textParser.parse_date(input_string)
+        self.assertEqual(2020, res[1].year)
+        self.assertEqual(4, res[1].month)
+        self.assertEqual(3, res[1].day)
+
+    def test_parse_date_4(self):
+        #contract: verifies that a another format of date can be parsed and that
+        #the dateobject returned is 2 years 1 month and 2 days after 01.03.2018
+        input_string = "01.03.18 5:30PM and 12 second"
+        res = textParser.parse_date(input_string)
+        self.assertEqual(2018, res[1].year)
+        self.assertEqual(3, res[1].month)
+        self.assertEqual(1, res[1].day)
+        self.assertEqual(17, res[1].hour)
+        self.assertEqual(30, res[1].minute)
+        self.assertEqual(12, res[1].second)
+
 
 if __name__ == '__main__':
   unittest.main()
