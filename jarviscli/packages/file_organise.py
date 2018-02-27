@@ -68,32 +68,51 @@ def destination_path(path):
 
     return new_dir_path, new_dir, extension
 
-
 def organise(new_dir_path, new_dir, path, extension):
+    branch = set()
+    _organise(new_dir_path, new_dir, path, extension, branch)
+    with open('organise@file_organise.py.branch', 'a') as branch_file:
+        branch_file.write('total: %s\n' % str(11))
+        branch_file.write('activated: %s\n' % str(len(branch)))
+        branch_file.write('set: %s\n' % str(branch))
+        branch_file.write('--------------\n')
+
+def _organise(new_dir_path, new_dir, path, extension, branch):
     for ext in extension:
+        branch.add(82)
         folder = os.path.join(new_dir_path, ext)
 
         if not os.path.exists(folder):
+            branch.add(86)
             os.mkdir(folder)
 
         if ext != '':
+            branch.add(90)
             for f in os.listdir(path):
+                branch.add(92)
                 if os.path.splitext(f)[1].strip('.') == ext:
+                    branch.add(94)
                     os.rename(f, os.path.join(folder, f))
 
         else:
+            branch.add(98)
             for f in os.listdir(path):
+                branch.add(100)
                 if f != new_dir and os.path.splitext(f)[1].strip('.') == ext:
+                    branch.add(102)
                     inner_folder = os.path.join(new_dir_path, f)
 
                     if os.path.exists(inner_folder):
+                        branch.add(106)
                         os.chdir(os.path.join(path, f))
                         for file in os.listdir():
+                            branch.add(109)
                             new_path = os.path.join(inner_folder, file)
                             os.rename(file, new_path)
                         os.rmdir(os.path.join(path, f))
 
                     else:
+                        branch.add(115)
                         os.rename(f, inner_folder)
 
 

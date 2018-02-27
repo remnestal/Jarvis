@@ -88,6 +88,16 @@ class News:
             self.get_opt()
 
     def get_opt(self):
+        branch = set()
+        _get_opt(self, branch)
+        with open('get_opt@news.py.branch', 'a') as branch_file:
+            branch_file.write('total: %s\n' % str(10))
+            branch_file.write('activated: %s\n' % str(len(branch)))
+            branch_file.write('set: %s\n' % str(branch))
+            branch_file.write('--------------\n')
+
+
+    def _get_opt(self, branch):
         # Other sources available here: https://newsapi.org/sources
         print("Select Source (1-5):")
         print("1: BBC")
@@ -97,26 +107,36 @@ class News:
         print("5: TechCrunch")
 
         if six.PY2:
+            branch.add(110)
             i = int(raw_input())
         else:
+            branch.add(113)
             i = int(input())
         if i == 1:
+            branch.add(116)
             self.source = "bbc-news"
         elif i == 2:
+            branch.add(119)
             self.source = "buzzfeed"
         elif i == 3:
+            branch.add(122)
             self.source = "google-news"
         elif i == 4:
+            branch.add(125)
             self.source = "reddit-r-all"
         elif i == 5:
+            branch.add(128)
             self.source = "techcrunch"
 
         print("would you like to set this as your default? (yes/no): ")
         if six.PY2:
+            branch.add(133)
             x = raw_input()
         else:
+            branch.add(136)
             x = input()
         if x == 'y' or x == 'yes':
+            branch.add(139)
             self.m.update_data('news-source', self.source)  # save to memory
             self.m.save()
 
@@ -129,19 +149,32 @@ class News:
             self.source + "&sortby=top&apiKey=" + self.apiKey
         self.request_news(u)
 
+
+    def request_news(self, url=None):
+        branch = set()
+        self._request_news(self, branch, url)
+        with open('request_news@news.py.branch', 'a') as branch_file:
+            branch_file.write('total: %s\n' % str(14))
+            branch_file.write('activated: %s\n' % str(len(branch)))
+            branch_file.write('set: %s\n' % str(branch))
+            branch_file.write('--------------\n')
+
     '''
         This has all the logic to request and parse the json.
         This function DOES NOT check user preferences.
         It also includes user interactions for getting more info on an articles
     '''
 
-    def request_news(self, url=None):
+    def _request_news(self, branch, url=None):
         # check to see if a url was passed
         if url is None:
+            branch.add(151)
             url = self.url
         try:
             response = urllib.request.urlopen(url)
+            branch.add(155)
         except AttributeError:
+            branch.add(157)
             response = urllib.urlopen(url)
         # Load json
         data = json.loads(response.read())
@@ -150,6 +183,7 @@ class News:
         # print articles with their index
         print("Top News Articles from " + self.source)
         for article in data['articles']:
+            branch.add(166)
             # print (Fore.GREEN + str(index) + ": " + article['title'] + Fore.RESET)
             print(str(index) + ": " + article['title'])
             article_list[index] = article
@@ -161,10 +195,13 @@ class News:
 
         # Check to see if index or NewsAPI was enterd
         if six.PY2:
+            branch.add(178)
             idx = raw_input()
         else:
+            branch.add(181)
             idx = input()
         if idx.lower() == "newsapi":
+            branch.add(184)
             webbrowser.open('https://newsapi.org/')
             return
 
@@ -172,9 +209,12 @@ class News:
         try:
             int(idx)
             if int(idx) > index:
+                branch.add(192)
                 print("Not a valid index")
                 return
+            branch.add(195)
         except:
+            branch.add(197)
             print("Not a valid index")
             return
 
@@ -183,12 +223,16 @@ class News:
 
         print("Do you want to read more? (yes/no): ")
         if six.PY2:
+            branch.add(206)
             i = raw_input()
         else:
+            branch.add(209)
             i = input()
         # if user wants to read more open browser to article url
         if i.lower() == "yes" or i.lower() == 'y':
+            branch.add(213)
             webbrowser.open(article_list[int(idx)]['url'])
             return
         else:
+            branch.add(217)
             return

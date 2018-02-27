@@ -151,9 +151,19 @@ def handler_clear(data):
     reminderList['items'] = [k for k in reminderList['items'] if k['hidden']]
     write_file("reminderlist.txt", reminderList)
 
-
 @unsupported(platform=MACOS)
 def reminder_handler(data):
+    branch = set()
+    _reminder_handler(data, branch)
+    with open('reminder_handler@reminder.py.branch', 'a') as branch_file:
+        branch_file.write('total: %s\n' % str(8))
+        branch_file.write('activated: %s\n' % str(len(branch)))
+        branch_file.write('set: %s\n' % str(branch))
+        branch_file.write('--------------\n')
+
+
+@unsupported(platform=MACOS)
+def _reminder_handler(data, branch):
     """
     Handle the command string for reminders.
     """
@@ -163,27 +173,35 @@ def reminder_handler(data):
     min_args = 0
     # Select the best trigger match from the actions list
     for key in actions:
+        branch.add(176)
         found_match = False
         for trigger in actions[key]['trigger']:
+            branch.add(179)
             new_score, index_list = score_sentence(data, trigger, distance_penalty=0.5, additional_target_penalty=0,
                                                    word_match_penalty=0.5)
             if found_match and len(index_list) > len(indices):
+                branch.add(183)
                 # A match for this action was already found.
                 # But this trigger matches more words.
                 indices = index_list
             if new_score < score:
+                branch.add(188)
                 if not found_match:
+                    branch.add(190)
                     indices = index_list
                     min_args = actions[key]['minArgs']
                     found_match = True
                 score = new_score
                 action = key
     if not action:
+        branch.add(197)
         return
     data = data.split()
     for j in sorted(indices, reverse=True):
+        branch.add(201)
         del data[j]
     if len(data) < min_args:
+        branch.add(204)
         error("Not enough arguments for specified command {0}".format(action))
         return
     data = " ".join(data)

@@ -97,21 +97,35 @@ def scorecard(desc):
         text += Fore.BLUE + '*' * 35 + '\n\n'
     return text
 
-
 def score(self):
+    branch = set()
+    _score(self, branch)
+    with open('score@cricket.py.branch', 'a') as branch_file:
+        branch_file.write('total: %s\n' % str(24))
+        branch_file.write('activated: %s\n' % str(len(branch)))
+        branch_file.write('set: %s\n' % str(branch))
+        branch_file.write('--------------\n')
+
+def _score(self, branch):
     matches = all_matches()
     print(Fore.RED + "\nALL MATCHES\n" + Fore.LIGHTBLUE_EX)
     for i, m in enumerate(matches, 1):
+        branch.add(113)
         print("{}. {}".format(str(i), m))
     if six.PY2:
+        branch.add(116)
         choice = int(raw_input(Fore.RED + '\nEnter choice (number): ' + Fore.RESET))
     else:
+        branch.add(119)
         choice = int(input(Fore.RED + '\nEnter choice (number): ' + Fore.RESET))
     while choice < 1 or choice > len(matches):
+        branch.add(122)
         print(Fore.BLACK + '\nWrong choice')
         if six.PY2:
+            branch.add(125)
             choice = int(raw_input(Fore.RED + '\nEnter choice again: ' + Fore.RESET))
         else:
+            branch.add(128)
             choice = int(input(Fore.RED + '\nEnter choice again: ' + Fore.RESET))
 
     desc = matches[choice - 1].title()
@@ -120,6 +134,7 @@ def score(self):
     print(res)
     print("\n")
     if(res == Fore.RED + "MATCH YET TO BEGIN"):
+        branch.add(137)
         return
     print(live_score(desc))
     print(Fore.LIGHTBLUE_EX + '1. Full Score Card')
@@ -128,43 +143,60 @@ def score(self):
     print('4. Quit' + Fore.RESET)
 
     if six.PY2:
+        branch.add(146)
         choice = int(raw_input(Fore.RED + '\nEnter choice (number): ' + Fore.RESET))
     else:
+        branch.add(149)
         choice = int(input(Fore.RED + '\nEnter choice (number): ' + Fore.RESET))
     while choice < 1 or choice > 4:
+        branch.add(152)
         print(Fore.BLACK + '\nWrong choice')
         if six.PY2:
+            branch.add(155)
             choice = int(raw_input(Fore.RED + '\nEnter choice again: ' + Fore.RESET))
         else:
+            branch.add(158)
             choice = int(input(Fore.RED + '\nEnter choice again: ' + Fore.RESET))
     print('')
 
     if choice == 1:
+        branch.add(163)
         ref = 'y'
         while ref == 'y':
+            branch.add(166)
             print(scorecard(desc))
             if six.PY2:
+                branch.add(169)
                 ref = raw_input(Fore.RED + 'Do you want to refresh:(y/n) ' + Fore.RESET)
             else:
+                branch.add(172)
                 ref = input(Fore.RED + 'Do you want to refresh:(y/n) ' + Fore.RESET)
             print('\n')
 
     elif choice == 2:
+        branch.add(177)
         ref = 'y'
         while ref == 'y':
+            branch.add(180)
             print(commentary(desc))
             if six.PY2:
+                branch.add(183)
                 ref = raw_input(Fore.RED + 'Do you want to refresh:(y/n) ' + Fore.RESET)
             else:
+                branch.add(186)
                 ref = input(Fore.RED + 'Do you want to refresh:(y/n) ' + Fore.RESET)
             print('\n')
 
     elif choice == 3:
+        branch.add(191)
         ref = 'y'
         while ref == 'y':
+            branch.add(194)
             print(live_score(desc))
             if six.PY2:
+                branch.add(197)
                 ref = raw_input(Fore.RED + 'Do you want to refresh:(y/n) ' + Fore.RESET)
             else:
+                branch.add(200)
                 ref = input(Fore.RED + 'Do you want to refresh:(y/n) ' + Fore.RESET)
             print('\n')

@@ -51,25 +51,40 @@ class Jarvis(CmdInterpreter, object):
         """Jarvis let's you know if an error has occurred."""
         print_say("I could not identify your command...", self, Fore.RED)
 
+    # wrapper
     def precmd(self, line):
+        branch = set()
+        self._precmd(line, branch)
+        with open('precmd@Jarvis.py.branch', 'a') as branch_file:
+            branch_file.write('total: %s\n' % str(5))
+            branch_file.write('activated: %s\n' % str(len(branch)))
+            branch_file.write('set: %s\n' % str(branch))
+            branch_file.write('--------------\n')
+
+    def _precmd(self, line, branch):
         """Hook that executes before every command."""
         words = line.split()
 
         # append calculate keyword to front of leading char digit (or '-') in line
         if len(words) > 0 and (words[0].isdigit() or line[0] == "-"):
+            branch.add(64)
             line = "calculate " + line
             words = line.split()
 
         if len(words) == 0:
+            branch.add(68)
             line = "None"
         elif len(words) == 1:
+            branch.add(70)
             # if the action is a dict action, the command should contain more than one word
             # such as 'disable sound' or 'please, could you check the weather in Madrid'
             dict_actions = [list(action.keys())[0]
                             for action in self.actions if isinstance(action, dict)]
             if words[0] in dict_actions:
+                branch.add(75)
                 self.default(words)
         elif (len(words) > 2) or (words[0] not in self.actions):
+            branch.add(77)
             line = self.parse_input(line)
         return line
 
