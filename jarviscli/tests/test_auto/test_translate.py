@@ -85,6 +85,32 @@ class TranslateTest(unittest.TestCase):
         else:
             self.fail('There was no matching output after translation. If the format of the output has changed, the regex used in the test may be obsolete.')
 
+    def test_both_languages_misspelled(self):
+        """ contract:
+            The translate.main function shall return a correct translation from
+            english to swedish, as per the Google-translate standard, after both
+            the source and dest languages are misspelled on the frist try.
+        """
+        # set up query parameters and oracle for assertion
+        params = ['englosh', 'english', 'svadish', 'swedish', 'life is hard']
+        oracle = u'livet \u00e4r h\u00e5rt'
+
+        # hijack the file descriptors for simulating user input/output
+        sys.stdin = StringIO(''.join(map(lambda p: '%s\n' % p, params)))
+        sys.stdout = output = StringIO()
+
+        translate.main(Jarvis())
+
+        # extract the translation from stdout
+        sys.stdout  = sys.__stdout__
+        pattern = r'\[\w+\] ((?:.+ ?)*)'
+        translation = re.findall(pattern, output.getvalue().split('\n')[11])
+
+        if (translation):
+            self.assertEqual(oracle, translation[0])
+        else:
+            self.fail('There was no matching output after translation. If the format of the output has changed, the regex used in the test may be obsolete.')
+
 
     def tearDown(self):
         """ return file descriptors to their absolute origin """
