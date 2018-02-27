@@ -95,3 +95,21 @@ class ParseNumberTest(unittest.TestCase):
     	skip, parsed_input = textParser.parse_number(number_input, numwords=parselist)
     	self.assertEqual(0, skip)
     	self.assertEqual(0, parsed_input)
+
+    def test_default_numparselist(self):
+        """Contract: test that default_numparselist returns a list
+            of default words that can be used by parse_number to parse specified 
+            words to numerals
+        """
+
+        parselist = textParser.default_numparselist()
+        parsekeys = parselist.keys()
+        first_key = parsekeys[0]
+        self.assertEqual('and', first_key)
+
+        #Test that the list can be used as a parselist in parse_number
+        #with a key from the list
+        number_input = first_key
+        skip, parsed_input = textParser.parse_number(number_input, numwords=parselist)
+        self.assertEqual(1, skip)
+        self.assertEqual(0, parsed_input)
