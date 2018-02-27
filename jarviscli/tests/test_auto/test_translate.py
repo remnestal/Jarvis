@@ -2,9 +2,11 @@ import unittest
 import sys
 import re
 import packages.translate as translate
-
 from Jarvis import Jarvis
-from StringIO import StringIO
+try:  # python2
+    from StringIO import StringIO
+except ImportError:  # python3
+    from io import StringIO
 
 class TranslateTest(unittest.TestCase):
 
@@ -24,7 +26,6 @@ class TranslateTest(unittest.TestCase):
         translate.main(Jarvis())
 
         # extract the translation from stdout
-        sys.stdout  = sys.__stdout__
         pattern = r'\[\w+\] ((?:.+ ?)*)'
         translation = re.findall(pattern, output.getvalue().split('\n')[8])
 
@@ -50,7 +51,6 @@ class TranslateTest(unittest.TestCase):
         translate.main(Jarvis())
 
         # extract the translation from stdout
-        sys.stdout  = sys.__stdout__
         pattern = r'\[\w+\] ((?:.+ ?)*)'
         translation = re.findall(pattern, output.getvalue().split('\n')[11])
 
@@ -76,7 +76,6 @@ class TranslateTest(unittest.TestCase):
         translate.main(Jarvis())
 
         # extract the translation from stdout
-        sys.stdout  = sys.__stdout__
         pattern = r'\[\w+\] ((?:.+ ?)*)'
         translation = re.findall(pattern, output.getvalue().split('\n')[11])
 
@@ -102,9 +101,8 @@ class TranslateTest(unittest.TestCase):
         translate.main(Jarvis())
 
         # extract the translation from stdout
-        sys.stdout  = sys.__stdout__
         pattern = r'\[\w+\] ((?:.+ ?)*)'
-        translation = re.findall(pattern, output.getvalue().split('\n')[11])
+        translation = re.findall(pattern, output.getvalue().split('\n')[14])
 
         if (translation):
             self.assertEqual(oracle, translation[0])
