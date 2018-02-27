@@ -1,16 +1,15 @@
 import unittest
 from packages import cricket
 import sys
-import io
-# try:  # python2
-#     from StringIO import StringIO
-# except ImportError:  # python3
-#     from io import StringIO
+try:  # python2
+    from StringIO import StringIO
+except ImportError:  # python3
+    from io import StringIO
 
 
 class CricketTest(unittest.TestCase):
 	def setUp(self):
-		sys.stdout = io.StringIO()
+		sys.stdout = StringIO()
 
 	def testScoreCard(self):
 		'''
@@ -18,7 +17,7 @@ class CricketTest(unittest.TestCase):
 		'''
 
 		# simulate input and call cricket module
-		sys.stdin = io.StringIO('2\n1\nn')
+		sys.stdin = StringIO('2\n1\nn')
 		cricket.score(self)
 		
 		# read output from cricket module and assert it is not None
@@ -33,7 +32,7 @@ class CricketTest(unittest.TestCase):
 		'''
 
 		# simulate input and call cricket module
-		sys.stdin = io.StringIO('2\n3\nn')
+		sys.stdin = StringIO('2\n3\nn')
 		cricket.score(self)
 
 		# read output from cricket module and assert it is not None
@@ -47,7 +46,7 @@ class CricketTest(unittest.TestCase):
 		'''
 
 		# simulate input and call cricket module
-		sys.stdin = io.StringIO('2\n2\nn')
+		sys.stdin = StringIO('2\n2\nn')
 		cricket.score(self)
 
 		# read output from cricket module and assert it is not None
@@ -61,7 +60,7 @@ class CricketTest(unittest.TestCase):
 		'''
 
 		# simulate input and call cricket module
-		sys.stdin = io.StringIO('32193\n2\n127843\n1\nn')
+		sys.stdin = StringIO('32193\n2\n127843\n1\nn')
 		cricket.score(self)
 		
 		# read output from cricket module and assert it is not None
