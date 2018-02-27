@@ -5,6 +5,30 @@ from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 import re
 
+def default_numparselist():
+	""" Default list of words that can be parsed to numerals
+		used by parse_number
+	"""
+	numwords = {}
+
+	if not numwords:
+		units = ["zero", "one", "two", "three",
+				 "four", "five", "six", "seven", "eight", "nine", "ten",
+				 "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+				 "sixteen", "seventeen", "eighteen", "nineteen"]
+		tens = ["", "", "twenty", "thirty", "forty", "fifty",
+				"sixty", "seventy", "eighty", "ninety"]
+		scales = ["hundred", "thousand", "million", "billion", "trillion"]
+
+		numwords["and"] = (1, 0)
+		for idx, word in enumerate(units):
+			numwords[word] = (1, idx)
+		for idx, word in enumerate(tens):
+			numwords[word] = (1, idx * 10)
+		for idx, word in enumerate(scales):
+			numwords[word] = (10 ** (idx * 3 or 2), 0)
+
+	return numwords
 
 def parse_number(string, numwords=None):
     """
@@ -17,23 +41,7 @@ def parse_number(string, numwords=None):
              that were parsed for the number and the value of the integer itself.
     """
     if numwords is None:
-        numwords = {}
-    if not numwords:
-        units = ["zero", "one", "two", "three",
-                 "four", "five", "six", "seven", "eight", "nine", "ten",
-                 "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-                 "sixteen", "seventeen", "eighteen", "nineteen"]
-        tens = ["", "", "twenty", "thirty", "forty", "fifty",
-                "sixty", "seventy", "eighty", "ninety"]
-        scales = ["hundred", "thousand", "million", "billion", "trillion"]
-
-        numwords["and"] = (1, 0)
-        for idx, word in enumerate(units):
-            numwords[word] = (1, idx)
-        for idx, word in enumerate(tens):
-            numwords[word] = (1, idx * 10)
-        for idx, word in enumerate(scales):
-            numwords[word] = (10 ** (idx * 3 or 2), 0)
+        numwords = default_numparselist()
 
     skip = 0
     value = 0
