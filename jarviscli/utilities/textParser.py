@@ -61,6 +61,72 @@ def parse_number(string, numwords=None):
     return skip, value
 
 
+def parse_date_formats(string):
+    """
+    Supported date formats:
+    2017-03-22 and 17-03-22
+    22.03.2017 and 22.03.17
+    """
+    if re.match("^[0-9]{2}-[0-1][0-9]-[0-3][0-9]$", string):
+        return dt.strptime(string, "%y-%m-%d").date()
+    elif re.match("^[1-9][0-9]{3}-[0-1][0-9]-[0-3][0-9]$", string):
+        return dt.strptime(string, "%Y-%m-%d").date()
+    elif re.match("^[0-3][0-9]\.[0-1][0-9]\.[0-9]{2}$", string):
+        return dt.strptime(string, "%d.%m.%y").date()
+    elif re.match("^[0-3][0-9]\.[0-1][0-9]\.[1-9][0-9]{3}$", string):
+        return dt.strptime(string, "%d.%m.%Y").date()
+    else:
+        return False #No match
+
+def parse_time_formats(string):
+    """
+    Supported time formats:
+        17:30
+        5:30PM/AM
+    """
+    if re.match("^[0-1][0-9]:[0-5][0-9][AP]M$", string):
+        return dt.strptime(string, "%I:%M%p").time()
+    elif re.match("^[1-9]:[0-5][0-9][AP]M$", string):
+        return dt.strptime("0" + string, "%I:%M%p").time()
+    elif re.match("^[0-2][0-9]:[0-5][0-9]$", string):
+        return dt.strptime(string, "%H:%M").time()
+    elif re.match("^[1-9]:[0-5][0-9]$", string):
+        return dt.strptime("0" + string, "%H:%M").time()
+    else:
+        return False #No match
+
+def parse_timespan_formats(string, delta_value, ret_date, ret_time):
+    """
+    Supported timespan formats:
+        in one second/minute/hour/day/week/month/year
+        next monday
+    """
+    new_time = dt.combine(ret_date, ret_time)
+    if "year" in string:
+        ret_date += relativedelta(years=delta_value)
+    elif "month" in string:
+        ret_date += relativedelta(months=delta_value)
+    elif "week" in string:
+        ret_date += timedelta(weeks=delta_value)
+    elif "day" in string:
+        ret_date += timedelta(days=delta_value)
+    elif "hour" in string:
+        new_time += timedelta(hours=delta_value)
+        ret_date = new_time.date()
+        ret_time = new_time.time()
+    elif "minute" in string:
+        new_time += timedelta(minutes=delta_value)
+        ret_date = new_time.date()
+        ret_time = new_time.time()
+    elif "second" in string:
+        new_time += timedelta(seconds=delta_value)
+        ret_date = new_time.date()
+        ret_time = new_time.time()
+    else:
+        return False
+
+    return ret_date, ret_time
+
 def parse_date(string):
     """
     Parse the given string for a date or timespan.
@@ -80,7 +146,6 @@ def parse_date(string):
              that were parsed for the date and the date itself as datetime.
     """
     elements = string.split()
-
     parse_day = False
     parse_delta_value = False
     parse_delta_unit = 0
@@ -89,7 +154,13 @@ def parse_date(string):
     ret_time = dt.now().time()
     skip = 0
     for index, d in enumerate(elements):
-        if parse_day:
+        tmp_match_date = parse_date_formats(d)
+        tmp_match_time = parse_time_formats(d)
+        if tmp_match_date != False:
+            ret_date = tmp_match_date 
+        elif tmp_match_time != False:
+            ret_time = tmp_match_time
+        elif parse_day:
             d += dt.today().strftime(" %Y %W")
             try:
                 ret_date = dt.strptime(d, "%a %Y %W").date()
@@ -106,48 +177,13 @@ def parse_date(string):
                 " ".join(elements[index:]))
             parse_delta_value = False
         elif parse_delta_unit:
-            new_time = dt.combine(ret_date, ret_time)
-            if "year" in d:
-                ret_date += relativedelta(years=delta_value)
-            elif "month" in d:
-                ret_date += relativedelta(months=delta_value)
-            elif "week" in d:
-                ret_date += timedelta(weeks=delta_value)
-            elif "day" in d:
-                ret_date += timedelta(days=delta_value)
-            elif "hour" in d:
-                new_time += timedelta(hours=delta_value)
-                ret_date = new_time.date()
-                ret_time = new_time.time()
-            elif "minute" in d:
-                new_time += timedelta(minutes=delta_value)
-                ret_date = new_time.date()
-                ret_time = new_time.time()
-            elif "second" in d:
-                new_time += timedelta(seconds=delta_value)
-                ret_date = new_time.date()
-                ret_time = new_time.time()
+            tmp_timespan_match = parse_timespan_formats(d, delta_value, ret_date, ret_time)
+            if tmp_timespan_match != False:
+                ret_date = tmp_timespan_match[0]
+                ret_time = tmp_timespan_match[1]
             elif parse_delta_unit == 1:
                 print("Missing time unit")
             parse_delta_unit -= 1
-
-        elif re.match("^[0-9]{2}-[0-1][0-9]-[0-3][0-9]$", d):
-            ret_date = dt.strptime(d, "%y-%m-%d").date()
-        elif re.match("^[1-9][0-9]{3}-[0-1][0-9]-[0-3][0-9]$", d):
-            ret_date = dt.strptime(d, "%Y-%m-%d").date()
-        elif re.match("^[0-3][0-9]\.[0-1][0-9]\.[0-9]{2}$", d):
-            ret_date = dt.strptime(d, "%d.%m.%y").date()
-        elif re.match("^[0-3][0-9]\.[0-1][0-9]\.[1-9][0-9]{3}$", d):
-            ret_date = dt.strptime(d, "%d.%m.%Y").date()
-
-        elif re.match("^[0-1][0-9]:[0-5][0-9][AP]M$", d):
-            ret_time = dt.strptime(d, "%I:%M%p").time()
-        elif re.match("^[1-9]:[0-5][0-9][AP]M$", d):
-            ret_time = dt.strptime("0" + d, "%I:%M%p").time()
-        elif re.match("^[0-2][0-9]:[0-5][0-9]$", d):
-            ret_time = dt.strptime(d, "%H:%M").time()
-        elif re.match("^[1-9]:[0-5][0-9]$", d):
-            ret_time = dt.strptime("0" + d, "%H:%M").time()
 
         elif d == "next":
             parse_day = True
